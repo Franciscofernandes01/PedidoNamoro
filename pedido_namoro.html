@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quer namorar comigo? ❤️</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      color: #fff;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .buttons {
+      position: relative;
+      width: 90vw;      /* área delimitada onde o botão “não” pode se mover */
+      max-width: 600px; /* limite máximo para desktop */
+      height: 250px;    /* altura da área de fuga */
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    button {
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: inherit;
+      position: absolute;
+    }
+
+    #yes {
+      font-size: 2em;
+      padding: 25px 80px;
+      background-color: #ff1493;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #yes:hover {
+      transform: scale(1.1);
+      background-color: #ff4081;
+    }
+
+    #no {
+      font-size: 1.1em;
+      padding: 10px 25px;
+      background-color: #fff;
+      color: #ff1493;
+      z-index: 9;
+      transition: top 0.3s, left 0.3s;
+    }
+
+    #no:hover {
+      background-color: #ffe6f2;
+    }
+
+    .gallery {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gallery img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: float 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+
+    .heart {
+      position: absolute;
+      color: #fff;
+      font-size: 20px;
+      animation: fall 6s linear infinite;
+      opacity: 0.8;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    .sound-hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 1em;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      #yes {
+        font-size: 1.6em;
+        padding: 20px 60px;
+      }
+
+      #no {
+        font-size: 1em;
+        padding: 8px 20px;
+      }
+
+      .buttons {
+        height: 200px;
+      }
+
+      .gallery img {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Quer namorar comigo? 💖</h1>
+  
+  <div class="buttons" id="buttonArea">
+    <button id="yes">SIM 💘</button>
+    <button id="no">Não 😅</button>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <img src="https://picsum.photos/200?random=1" alt="Foto 1">
+    <img src="https://picsum.photos/200?random=2" alt="Foto 2">
+    <img src="https://picsum.photos/200?random=3" alt="Foto 3">
+    <img src="https://picsum.photos/200?random=4" alt="Foto 4">
+  </div>
+
+  <p class="sound-hint">🔈 Clique em qualquer lugar para ativar a música!</p>
+
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2023/05/10/audio_16bde69d18.mp3?filename=romantic-guitar-147100.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const noBtn = document.getElementById('no');
+    const yesBtn = document.getElementById('yes');
+    const gallery = document.getElementById('gallery');
+    const music = document.getElementById('bgMusic');
+    const soundHint = document.querySelector('.sound-hint');
+    const area = document.getElementById('buttonArea');
+
+    // Garante que o botão "Não" se mova apenas dentro da área visível
+    function moveNoButton() {
+      const areaRect = area.getBoundingClientRect();
+      const maxX = areaRect.width - noBtn.offsetWidth - 10;
+      const maxY = areaRect.height - noBtn.offsetHeight - 10;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    // Posição inicial
+    moveNoButton();
+
+    // Fugir ao passar o mouse
+    noBtn.addEventListener('mouseenter', moveNoButton);
+
+    // Quando clicar em "Sim"
+    yesBtn.addEventListener('click', () => {
+      document.querySelector('h1').textContent = 'Eu sabia que você diria SIM! 💞';
+      document.querySelector('.buttons').style.display = 'none';
+      gallery.style.display = 'flex';
+      criarCorações();
+
+      const msg = document.createElement('h2');
+      msg.textContent = 'Eu te amo ❤️';
+      msg.style.fontSize = '3em';
+      msg.style.marginTop = '30px';
+      msg.style.animation = 'pulse 1s infinite alternate';
+      document.body.appendChild(msg);
+
+      const pulse = document.createElement('style');
+      pulse.textContent = `
+        @keyframes pulse {
+          from { transform: scale(1); }
+          to { transform: scale(1.1); }
+        }`;
+      document.head.appendChild(pulse);
+    });
+
+    // Corações flutuando
+    function criarCorações() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.textContent = '💖';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 300);
+    }
+
+    // Música de fundo
+    document.body.addEventListener('click', () => {
+      music.volume = 0.3;
+      music.play();
+      soundHint.style.display = 'none';
+    }, { once: true });
+  </script>
+</body>
+</html>
